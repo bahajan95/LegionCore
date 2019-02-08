@@ -1850,8 +1850,8 @@ public:
             Player* player = GetTarget()->ToPlayer();
             if (player->IsInWater()) // Aquatic form
                 triggeredSpellId = SPELL_DRUID_FORM_AQUATIC;
-            else if (player->GetSkillValue(SKILL_RIDING) >= 225 && !player->IsInCombat() && CheckLocationForForm(DRUID_FLIGHT_FORM) == SPELL_CAST_OK) // Flight form
-                triggeredSpellId = player->GetSkillValue(SKILL_RIDING) >= 300 ? DRUID_SWIFT_FLIGHT_FORM : DRUID_FLIGHT_FORM;
+            else if (player->GetSkillValue(SKILL_RIDING) >= 225 && CheckLocationForForm(SPELL_DRUID_FORM_FLIGHT) == SPELL_CAST_OK) // Flight form
+                triggeredSpellId = player->getLevel() >= 71 ? SPELL_DRUID_FORM_SWIFT_FLIGHT : SPELL_DRUID_FORM_FLIGHT;
             else // Stag form (riding skill already checked in CheckCast)
                 triggeredSpellId = SPELL_DRUID_FORM_STAG;
 
