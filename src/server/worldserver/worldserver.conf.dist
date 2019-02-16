@@ -4102,44 +4102,15 @@ Metric.OverallStatusInterval = 1
 #
 ###################################################################################################
 
-#MAGICSTORM Mods
 ###################################################################################################
+# CUSTOM SETTINGS
 #
-#     Solocraft.Enable
-#        Description: Solocraft is a script to increase players and bots stats in raids, 
-#        based on group size. It feels a little Hacky, but raids is unfair hard with playerbots.
-#        Default:     0 (disabled)
-#                     1 (enabled)
-
-Solocraft.Enable = 1
-
-#
-#     Solocraft.Difficulty
-#        Default: 5, 10, 15, 10, 25, 30, 40
-
-Solocraft.Dungeon = 5
-Solocraft.Heroic = 10
-Solocraft.Mythic = 15
-Solocraft.Raid10 = 10
-Solocraft.Raid25 = 25
-Solocraft.Raid30 = 30
-Solocraft.Raid40 = 40
-
-#
-#     Login.BoA
+#     Start.Equipment
 #        Description: New players get some starting equipment.
-#        Default:     0 (disabled)
-#                     1 (enabled)
+#        Default:     0 (Disabled)
+#                     1 (Enabled)
 
-Login.BoA = 0
-
-#
-#     Congrats.Level
-#        Description: Server gives money for players on every 10 level.
-#        Default:     0 (disabled)
-#                     1 (enabled)
-
-Congrats.Level = 1
+Start.Equipment = 0
 
 #
 #     Time Is Money Friend
@@ -4149,30 +4120,23 @@ Congrats.Level = 1
 #               TimeIsMoneyFriend.Money    = 1000 (10 silver)
 
 TimeIsMoneyFriend.Interval = 3600000
-TimeIsMoneyFriend.Money    = 1000
+TimeIsMoneyFriend.Money = 1000
 
 #
-#     Login.Announcer.Enable
-#        Description: Announce every player and bots login
-#        Default:     0 (disabled)
-#                     1 (enabled)
+#     Double.XP
+#        Description: Enables or disables the Double XP Weekend script.
+#        Default:     1 (Enabled)
+#                     0 (Disabled)
 
-Login.Announcer.Enable = 1
-
-#
-#    Double XP Weekend
-#        Description: Enables or disables the Double XP Weekend Script
-#
-#    DoubleXP.Enable
-#        Default:     1 (enabled)
-#                     0 (disabled)
-
-DoubleXP.Enable = 1
+Double.XP = 1
 
 #
-#     Boss.Announcer.Enable
-#        Description: System announce who killed a world boss in global.
-#        Default:     0 (disabled)
-#                     1 (enabled)
+#     Debug.LFG
+#        Description: Enables or disables debug LFG system.
+#        Default:     1 (Enabled)
+#                     0 (Disabled)
 
-Boss.Announcer.Enable = 1
+Debug.LFG = 1
+
+#
+###################################################################################################

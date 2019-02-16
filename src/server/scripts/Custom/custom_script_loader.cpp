@@ -16,23 +16,18 @@
  */
 
 // This is where scripts' loading functions should be declared:
+
 void AddSC_custom_npcs();
-void AddSC_solocraft();
-void AddSC_Player_Boa();
-void AddSC_custom_CongratsOnLevel();
-void AddSC_announce_login();
-void AddSC_XpWeekend();
-void AddSC_Boss_Announcer();
+void AddSC_start_equipment();
+void AddSC_double_xp();
 void AddSC_quest_conversation();
+void AddSC_debug_lfg();
 
 void AddCustomScripts()
 {
     AddSC_custom_npcs(); 
-    AddSC_solocraft();
-    AddSC_Player_Boa();
-    AddSC_custom_CongratsOnLevel();
-    AddSC_announce_login();
-    AddSC_XpWeekend();
-    AddSC_Boss_Announcer();
+    AddSC_start_equipment();
+    AddSC_double_xp();
     AddSC_quest_conversation();
+    AddSC_debug_lfg();
 }
