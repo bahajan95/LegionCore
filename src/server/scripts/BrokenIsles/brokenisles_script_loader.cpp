@@ -125,13 +125,13 @@ void AddSC_boss_dargrul_the_underking();
 //void AddSC_boss_cordana_felsong();
 
 // Violet Hold
-//void AddSC_instance_violet_hold_legion();
-//void AddSC_violet_hold_legion();
+//void AddSC_instance_violet_hold_assault();
+//void AddSC_violet_hold_assault();
 //void AddSC_boss_anubesset();
-//void AddSC_boss_bloodprincess_thalena();
+//void AddSC_boss_blood_princess_thalena();
 //void AddSC_boss_festerface();
-//void AddSC_boss_millificent_manastorm();
-//void AddSC_boss_mindflayer_kaahrj();
+//void AddSC_boss_millificient_manastorm();
+//void AddSC_boss_mind_flayer_kaarhj();
 //void AddSC_boss_shivermaw();
 //void AddSC_boss_saelorn();
 //void AddSC_boss_fel_lord_betrug();
@@ -143,7 +143,7 @@ void AddSC_boss_advisor_melandrus();
 void AddSC_court_of_stars();
 void AddSC_instance_court_of_stars();
 
-//TheArcway
+// TheArcway
 void AddSC_instance_the_arcway();
 void AddSC_boss_general_xakal();
 void AddSC_boss_naltira();
@@ -189,18 +189,18 @@ void AddSC_boss_chronomatic_anomaly();
 void AddSC_boss_trilliax();
 void AddSC_boss_aluriel();
 
-//KARAZHAN
+// New Karazhan
 void AddSC_instance_new_karazhan();
-void AddSC_boss_maiden_of_virtue();
-void AddSC_boss_curator();
-void AddSC_boss_mana_devourer();
-void AddSC_boss_shade_of_medivh();
-void AddSC_boss_moroes();
-void AddSC_boss_attumen();
-void AddSC_boss_opera();
-void AddSC_boss_vizaduum();
-void AddSC_boss_nightbane();
 void AddSC_new_karazhan();
+void AddSC_boss_new_maiden_of_virtue();
+void AddSC_boss_new_curator();
+void AddSC_boss_new_mana_devourer();
+void AddSC_boss_new_shade_of_medivh();
+void AddSC_boss_new_moroes();
+void AddSC_boss_new_attumen();
+void AddSC_boss_new_opera();
+void AddSC_boss_new_vizaduum();
+void AddSC_boss_new_nightbane();
 
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
@@ -313,13 +313,13 @@ void AddBrokenIslesScripts()
     //AddSC_boss_cordana_felsong();
 
     // Violet Hold
-    //AddSC_instance_violet_hold_legion();
-    //AddSC_violet_hold_legion();
+    //AddSC_instance_violet_hold_assault();
+    //AddSC_violet_hold_assault();
     //AddSC_boss_anubesset();
-    //AddSC_boss_bloodprincess_thalena();
+    //AddSC_boss_blood_princess_thalena();
     //AddSC_boss_festerface();
-    //AddSC_boss_millificent_manastorm();
-    //AddSC_boss_mindflayer_kaahrj();
+    //AddSC_boss_millificient_manastorm();
+    //AddSC_boss_mind_flayer_kaarhj();
     //AddSC_boss_shivermaw();
     //AddSC_boss_saelorn();
     //AddSC_boss_fel_lord_betrug();
@@ -361,8 +361,8 @@ void AddBrokenIslesScripts()
     AddSC_boss_sasszine();
     AddSC_tomb_of_sargeras();
     AddSC_instance_tomb_of_sargeras();
-	
-	// The HightHold
+
+    // The HightHold
     AddSC_instance_the_nighthold();
     AddSC_the_nighthold();
     AddSC_boss_skorpyron();
@@ -370,16 +370,16 @@ void AddBrokenIslesScripts()
     AddSC_boss_trilliax();
     AddSC_boss_aluriel();
   
-    //KARAZHAN
+    // New Karazhan
     AddSC_instance_new_karazhan();
-    AddSC_boss_maiden_of_virtue();
-    AddSC_boss_curator();
-    AddSC_boss_mana_devourer();
-    AddSC_boss_shade_of_medivh();
-    AddSC_boss_moroes();
-    AddSC_boss_attumen();
-    AddSC_boss_opera();
-    AddSC_boss_vizaduum();
-    AddSC_boss_nightbane();
     AddSC_new_karazhan();
+    AddSC_boss_new_maiden_of_virtue();
+    AddSC_boss_new_curator();
+    AddSC_boss_new_mana_devourer();
+    AddSC_boss_new_shade_of_medivh();
+    AddSC_boss_new_moroes();
+    AddSC_boss_new_attumen();
+    AddSC_boss_new_opera();
+    AddSC_boss_new_vizaduum();
+    AddSC_boss_new_nightbane();
 }
