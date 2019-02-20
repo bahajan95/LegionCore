@@ -381,6 +381,63 @@ public:
     }
 };
 
+// quest 38970
+class npc_tele_q38970 : public CreatureScript
+{
+public:
+    npc_tele_q38970() : CreatureScript("npc_tele_q38970") { }
+     struct npc_tele_q38970AI : public ScriptedAI
+    {
+        npc_tele_q38970AI(Creature* creature) : ScriptedAI(creature) { }
+         void MoveInLineOfSight(Unit* who) override
+        {
+            if (Player* player = who->ToPlayer())
+            {
+                if (player->GetQuestStatus(38970) == QUEST_STATUS_INCOMPLETE)
+                {    
+                    if (player->IsInDist(me, 2.0f))
+                    {
+                       player->KilledMonsterCredit(94259);
+                    }
+                }
+            }
+        }
+    };
+     CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_tele_q38970AI(creature);
+    }
+};
+
+class npc_quest_48954 : public CreatureScript
+{
+public:
+    npc_quest_48954() : CreatureScript("npc_quest_48954") { }
+
+    bool OnQuestReward(Player* player, Creature* creature, const Quest *_Quest, uint32 /*slot*/) override
+    {
+        if (_Quest->GetQuestId() == 48954)
+        {
+            if (AchievementEntry const *ForgedforBattle = sAchievementStore.LookupEntry(11991))
+            {
+                player->CompletedAchievement(ForgedforBattle);
+            }
+        }
+
+        return true;
+    }
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_quest_48954AI(creature);
+    }
+
+    struct npc_quest_48954AI : public ScriptedAI
+    {
+        npc_quest_48954AI(Creature* creature) : ScriptedAI(creature) { }
+    };
+};
+
 void AddSC_dalaran_legion()
 {
     new OnLegionArrival();
@@ -393,4 +450,6 @@ void AddSC_dalaran_legion()
     new npc_hunter_talua();
     new npc_great_eagle();
     new player_artifact_choice();
+    new npc_tele_q38970();
+    new npc_quest_48954();
 }
