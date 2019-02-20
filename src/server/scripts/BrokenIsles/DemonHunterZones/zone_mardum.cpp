@@ -1051,9 +1051,9 @@ class spell_mardum_back_to_black_temple : public SpellScript
             //player->AddMovieDelayedTeleport(471, 1468, 4325.94, -620.21, -281.41, 1.658936);
 
             if (player->GetTeam() == ALLIANCE)
-                player->AddMovieDelayedTeleport(471, 1468, 4325.94f,   -620.21f, -281.41f, 1.658936f);
+                player->TeleportTo(471, 1468, 4325.94f,   -620.21f, -281.41f, 1.658936f);
             else
-                player->AddMovieDelayedTeleport(471, 1468, 4325.94f,   -620.21f, -281.41f, 1.658936f);
+                player->TeleportTo(471, 1468, 4325.94f,   -620.21f, -281.41f, 1.658936f);
 
             player->GetScheduler().Schedule(Seconds(2), [](TaskContext context)
             {
