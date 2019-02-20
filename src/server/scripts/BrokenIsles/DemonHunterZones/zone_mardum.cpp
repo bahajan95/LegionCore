@@ -31,6 +31,7 @@ enum eQuests
     QUEST_INVASION_BEGIN        = 40077,
     QUEST_ASHTONGUE_FORCES      = 40378,
     QUEST_COILSKAR_FORCES       = 40379,
+    QUEST_EYE_ON_THE_PRIZE      = 39049,
     QUEST_MEETING_WITH_QUEEN    = 39050,
     QUEST_SHIVARRA_FORCES       = 38765,
     QUEST_BEFORE_OVERRUN        = 38766,
@@ -264,15 +265,16 @@ public:
     uint32 _killCredit;
 };
 
-struct npc_mardum_inquisitor_pernissius : public ScriptedAI
+// 93105 - Inquisitor Baleful
+struct npc_inquisitor_baleful : public ScriptedAI
 {
-    npc_mardum_inquisitor_pernissius(Creature* creature) : ScriptedAI(creature) { }
+    npc_inquisitor_baleful(Creature* creature) : ScriptedAI(creature) { }
 
     enum Spells
     {
         SPELL_INCITE_MADNESS    = 194529,
         SPELL_INFERNAL_SMASH    = 192709,
-
+        SPELL_LEGION_AEGIS      = 192665,
         SPELL_LEARN_EYE_BEAM    = 195447
     };
 
@@ -283,48 +285,106 @@ struct npc_mardum_inquisitor_pernissius : public ScriptedAI
 
     enum Text
     {
-        SAY_ONDEATH = 0,
-        SAY_ONCOMBAT = 1,
-        SAY_60PCT = 2,
+        SAY_ONCOMBAT = 0,
+        SAY_ONDEATH = 1,
+        SAY_60PCT = 2
     };
 
-    ObjectGuid colossalInfernalguid;
+    Position const NPCsPos[2] =
+    {
+        { 523.404f, 2428.41f, -117.087f, 0.108873f }, /// Summmon position for Colossal Infernal
+        { 586.843323f, 2433.053955f, -62.977276f, 6.143252f } /// Fly position when Legion Aegis Event (Inquisitor Baleful)
+    };
+
+    ObjectGuid colossalInfernalGuid;
+    bool aegisDone;
+    bool doingAegis;
+    uint8 elementalCast;
 
     void Reset() override
     {
-        if (Creature* infernal = me->SummonCreature(NPC_COLOSSAL_INFERNAL, 523.404f, 2428.41f, -117.087f, 0.108873f, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 2000))
-            colossalInfernalguid = infernal->GetGUID();
+        me->SetCanFly(false);
+        me->SetDisableGravity(false);
+
+        if (!me->FindNearestCreature(NPC_COLOSSAL_INFERNAL, 150.0f))
+        {
+            if (Creature* infernal = me->SummonCreature(NPC_COLOSSAL_INFERNAL, NPCsPos[0], TEMPSUMMON_CORPSE_TIMED_DESPAWN, 2000))
+                colossalInfernalGuid = infernal->GetGUID();
+        }
+
+        aegisDone = false;
+        doingAegis = false;
+        elementalCast = 1;
     }
 
     Creature* GetInfernal() const
     {
-        return ObjectAccessor::GetCreature(*me, colossalInfernalguid);
+        return ObjectAccessor::GetCreature(*me, colossalInfernalGuid);
     }
 
     void EnterCombat(Unit*) override
     {
         Talk(SAY_ONCOMBAT);
 
-        me->GetScheduler().Schedule(Seconds(15), [this](TaskContext context)
+        me->GetScheduler().Schedule(Seconds(urand(8, 10)), [this](TaskContext context) /// Incite Madness
         {
-            if (Unit* target = me->GetVictim())
-                me->CastSpell(target, SPELL_INCITE_MADNESS);
-
-            context.Repeat(Seconds(15));
-        })
-        .Schedule(Seconds(10), [this](TaskContext context)
-        {
-            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM))
-                if (Creature* infernal = GetInfernal())
-                    infernal->CastSpell(target, SPELL_INFERNAL_SMASH);
-
-            if (me->GetHealthPct() <= 60)
+            if (!doingAegis)
             {
-                Talk(SAY_60PCT);
+                if (Unit* target = me->GetVictim())
+                    me->CastSpell(target, SPELL_INCITE_MADNESS);
             }
 
-            context.Repeat(Seconds(10));
+            context.Repeat(15s);
         });
+    }
+
+    void DamageTaken(Unit* /*attacker*/, uint32& damage) override {
+        if (me->HealthBelowPctDamaged(60, damage) && !aegisDone)
+        {
+            aegisDone = true;
+            doingAegis = true;
+
+            Talk(SAY_60PCT);
+
+            if (Unit* target = me->GetVictim())
+                me->CastSpell(me, SPELL_LEGION_AEGIS, true);
+
+            me->AttackStop();
+            me->SetReactState(REACT_PASSIVE);
+
+            me->SetCanFly(true);
+            me->SetDisableGravity(true);
+            
+            me->GetMotionMaster()->MoveTakeoff(0, NPCsPos[1]);
+
+            me->GetScheduler().Schedule(1s, [this](TaskContext context)
+            {
+                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM))
+                {
+                    if (Creature* infernal = GetInfernal())
+                        infernal->CastSpell(target, SPELL_INFERNAL_SMASH);
+                }
+
+                elementalCast++;
+
+                if (elementalCast <= 3) /// Only 3 cast of Infernal Smash
+                    context.Repeat(5s);
+            });
+            
+            me->GetScheduler().Schedule(15s, [this](TaskContext context) /// End Legion Aegis event
+            {
+                me->SetReactState(REACT_AGGRESSIVE);
+                me->SetDisableGravity(true);
+
+                if (Creature* infernal = GetInfernal())
+                {
+                    infernal->AttackStop();
+                    infernal->SetReactState(REACT_PASSIVE);
+                }
+
+                doingAegis = false;
+            });
+        }
     }
 
     void JustDied(Unit* /*killer*/) override
@@ -339,23 +399,26 @@ struct npc_mardum_inquisitor_pernissius : public ScriptedAI
 
         for (Player* player : players)
         {
-            player->KilledMonsterCredit(105946);
-            player->KilledMonsterCredit(96159);
+            if (player->HasQuest(QUEST_EYE_ON_THE_PRIZE) && !player->GetQuestObjectiveData(QUEST_EYE_ON_THE_PRIZE, 0))
+            {
+                player->KilledMonsterCredit(105946);
+                player->KilledMonsterCredit(96159);
 
-            if (!player->HasSpell(SPELL_LEARN_EYE_BEAM))
-                player->CastSpell(player, SPELL_LEARN_EYE_BEAM);
+                if (!player->HasSpell(SPELL_LEARN_EYE_BEAM))
+                    player->CastSpell(player, SPELL_LEARN_EYE_BEAM);
+            }
         }
     }
 };
 
-// 192709 Infernal Smash
+// 192709 - Infernal Smash
 class spell_mardum_infernal_smash : public SpellScript
 {
     PrepareSpellScript(spell_mardum_infernal_smash);
 
     void HandleDummy(SpellEffIndex /*effIndex*/)
     {
-        if (!GetCaster() || !GetHitUnit())
+        if (!GetCaster() || !GetHitUnit() || !(GetHitUnit()->GetTypeId() == TypeID::TYPEID_PLAYER)) 
             return;
 
         GetCaster()->CastSpell(GetHitUnit(), GetEffectValue(), true);
@@ -837,54 +900,6 @@ public:
     }
 };
 
-// 192140 back to black temple
-class spell_mardum_back_to_black_temple : public SpellScript
-{
-    PrepareSpellScript(spell_mardum_back_to_black_temple);
-
-    void HandleOnCast()
-    {
-        if (Player* player = GetCaster()->ToPlayer())
-        {
-            player->AddMovieDelayedAction(471, [player]
-            {
-                //player->CastSpell(nullptr, 192141, true);
-
-                if (player->GetTeam() == ALLIANCE)
-                    player->TeleportTo(0, -8838.72f, 616.29f, 93.06f, 0.779564f);
-                else
-                    player->TeleportTo(1, 1569.96f, -4397.41f, 16.05f, 0.527317f);
-            });
-
-            player->GetScheduler().Schedule(Seconds(2), [](TaskContext context)
-            {
-                GetContextUnit()->RemoveAurasDueToSpell(192140); // Remove black screen
-            });
-
-            // TEMPFIX - Spells learned in next zone
-            if (player->GetSpecializationId() == TALENT_SPEC_DEMON_HUNTER_HAVOC)
-            {
-                player->LearnSpell(188499, false);
-                player->LearnSpell(198793, false);
-                player->LearnSpell(198589, false);
-                player->LearnSpell(179057, false);
-            }
-            else
-            {
-                player->LearnSpell(204596, false);
-                player->LearnSpell(203720, false);
-                player->LearnSpell(204021, false);
-                player->LearnSpell(185245, false);
-            }
-        }
-    }
-
-    void Register() override
-    {
-        OnCast += SpellCastFn(spell_mardum_back_to_black_temple::HandleOnCast);
-    }
-};
-
 class go_q38727 : public GameObjectScript
 {
 public:
@@ -1023,6 +1038,53 @@ public:
     }
 };
 
+// 192140 back to black temple
+class spell_mardum_back_to_black_temple : public SpellScript
+{
+    PrepareSpellScript(spell_mardum_back_to_black_temple);
+
+    void HandleOnCast()
+    {
+        if (Player* player = GetCaster()->ToPlayer())
+        {
+            // Should be spell 192141 but we can't cast after a movie right now
+            //player->AddMovieDelayedTeleport(471, 1468, 4325.94, -620.21, -281.41, 1.658936);
+
+            if (player->GetTeam() == ALLIANCE)
+                player->AddMovieDelayedTeleport(471, 1468, 4325.94f,   -620.21f, -281.41f, 1.658936f);
+            else
+                player->AddMovieDelayedTeleport(471, 1468, 4325.94f,   -620.21f, -281.41f, 1.658936f);
+
+            player->GetScheduler().Schedule(Seconds(2), [](TaskContext context)
+            {
+                GetContextUnit()->RemoveAurasDueToSpell(192140); // Remove black screen
+            });
+
+            // TEMPFIX - Spells learned in next zone
+            if (player->GetSpecializationId() == TALENT_SPEC_DEMON_HUNTER_HAVOC)
+            {
+                player->LearnSpell(188499, false);
+                player->LearnSpell(198793, false);
+                player->LearnSpell(198589, false);
+                player->LearnSpell(179057, false);
+            }
+            else
+            {
+                player->LearnSpell(204596, false);
+                player->LearnSpell(203720, false);
+                player->LearnSpell(204021, false);
+                player->LearnSpell(185245, false);
+            }
+        }
+    }
+
+    void Register() override
+    {
+        OnCast += SpellCastFn(spell_mardum_back_to_black_temple::HandleOnCast);
+    }
+};
+
+
 void AddSC_zone_mardum()
 {
     new PlayerScript_mardum_welcome_scene_trigger();
@@ -1037,7 +1099,7 @@ void AddSC_zone_mardum()
     new go_mardum_cage("go_mardum_cage_cyana",      94377);
     new go_mardum_cage("go_mardum_cage_izal",       93117);
     new go_mardum_cage("go_mardum_cage_mannethrel", 93230);
-    RegisterCreatureAI(npc_mardum_inquisitor_pernissius);
+    RegisterCreatureAI(npc_inquisitor_baleful);
     RegisterSpellScript(spell_mardum_infernal_smash);
     new npc_mardum_ashtongue_mystic();
     new go_mardum_portal_coilskar();
@@ -1058,6 +1120,6 @@ void AddSC_zone_mardum()
     RegisterCreatureAI(npc_mardum_tyranna);
     new npc_mardum_kayn_sunfury_end();
     new go_mardum_the_keystone();
-    RegisterSpellScript(spell_mardum_back_to_black_temple);
     new go_q38727();
+    RegisterSpellScript(spell_mardum_back_to_black_temple);
 }

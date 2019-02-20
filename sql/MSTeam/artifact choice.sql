@@ -1,4 +1,4 @@
--- Druid choice.
+﻿-- Druid choice.
 UPDATE `creature_template` SET `AIName` = 'SmartAI', `gossip_menu_id` = 19156, `npcflag` = 3 WHERE `entry` = 101195;
 DELETE FROM `gossip_menu_option` WHERE (`menu_id`=19156 AND `id`=0);
 INSERT INTO `gossip_menu_option` (`menu_id`, `id`, `option_icon`, `option_text`, `OptionBroadcastTextID`, `option_id`, `npc_option_npcflag`, `action_menu_id`, `action_poi_id`, `box_coded`, `box_money`, `box_text`, `BoxBroadcastTextID`) VALUES
@@ -261,3 +261,5 @@ INSERT INTO `playerchoice_response` (`ChoiceId`, `ResponseId`, `Index`, `ChoiceA
 	(237, 496, 3, 841057, '', 'Вот мой выбор', 'Выберите этот вариант, если хотите научиться огранять |cFF1EFF00|Hitem:130218:0:0:0:0:0:0:0:90:0|h[смертоносный темный янтарь]|h|r, повышающий ваш показатель искусности', '', 40534, 0),
 	(247, 703, 4, 0, 'Исцеление', 'Выбрать', 'Ветвь первого древа Г’ханир была давным-давно подарена смертным друидам полубогиней Авианой. Таинственная связь ветви с Изумрудным сном служит источником мира в Азероте. Долгое время друиды использовали этот посох для того, чтобы сдерживать порчу и безумие, исходящее из Кошмара, поэтому сатиры стремятся уничтожить Г’ханир любой ценой.', 'CONFIRM_ARTIFACT_CHOICE', 40703, 0);
 	
+        DELETE FROM `creature_template` WHERE `entry`=93105;
+        INSERT INTO `creature_template` VALUES (93105, 0, 0, 0, 95226, 0, 68182, 0, 0, 0, 'Inquisitor Baleful', '', '', NULL, NULL, 0, 98, 98, 5, 0, 0, 954, 0, 1, 1.14286, 1, 0, 0, 2000, 2000, 1, 1, 2, 32832, 2099200, 0, 0, 0, 0, 0, 0, 3, 2147483752, 0, 93105, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'SmartAI', 0, 3, 1, 5.5, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 'npc_inquisitor_baleful', 26365);
