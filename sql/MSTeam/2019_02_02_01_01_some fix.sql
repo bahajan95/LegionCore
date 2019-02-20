@@ -2567,3 +2567,5 @@ INSERT INTO `npc_vendor` (`entry`, `slot`, `item`, `maxcount`, `ExtendedCost`, `
 
 DELETE FROM creature WHERE id=15879 AND map=0 AND zoneid=12;
 
+INSERT INTO `areatrigger` VALUES ('49', '100007', '1712', '245760', '-3442.35', '9521.4', '9.57194', '');
+INSERT INTO `areatrigger` VALUES ('48', '100010', '1669', '1', '-3217.97', '9423.45', '-172.491', '');
