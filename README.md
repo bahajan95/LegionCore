@@ -1,8 +1,8 @@
-MagicStormTeam
+Legion Core
 
 --------------
 
-MagicStormTeam is a *MMORPG* Framework based mostly in C++.
+LegionEmu is a *MMORPG* Framework based mostly in C++.
 
 It is fully based on *TrinityCore*, with upgrades like :
 
